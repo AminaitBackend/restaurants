@@ -1,46 +1,82 @@
-from django.shortcuts import render
 from rest_framework import generics
-from .models import Restaurant, RestaurantCategory
-from rest_framework.permissions import IsAdminUser,AllowAny,IsAuthenticated
-from .serializers import RestaurantSerializer, RestaurantCategorySerializer
+from rest_framework.permissions import AllowAny
+
+from .models import Dish, DishCategory, Restaurant, RestaurantCategory, RestaurantOwner
+from .serializers import (
+    DishCategorySerializer,
+    DishSerializer,
+    RestaurantCategorySerializer,
+    RestaurantOwnerSerializer,
+    RestaurantSerializer,
+)
 
 
-# Create your views here.
-class RestaurantListAPIVIEW(generics.ListAPIView):
-    serializer_class = RestaurantSerializer
+class RestaurantListCreateView(generics.ListCreateAPIView):
     queryset = Restaurant.objects.all()
+    serializer_class = RestaurantSerializer
     permission_classes = [AllowAny]
 
-class RestaurantDetailAPIVIEW(generics.RetrieveAPIView):
-    serializer_class = RestaurantSerializer
-    queryset = Restaurant.objects.all()
-    permission_classes = [AllowAny]
-    lookup_field = 'id'
 
-
-class RestaurantMenuView(generics.ListAPIView):
-    serializer_class = RestaurantSerializer
+class RestaurantDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Restaurant.objects.all()
+    serializer_class = RestaurantSerializer
     permission_classes = [AllowAny]
 
-class RestaurantCategoryListView(generics.ListAPIView):
-    serializer_class=RestaurantCategorySerializer
+
+class RestaurantCategoryListCreateView(generics.ListCreateAPIView):
     queryset = RestaurantCategory.objects.all()
+    serializer_class = RestaurantCategorySerializer
     permission_classes = [AllowAny]
 
-class MenuCategoryListView(generics.ListAPIView):
-    serializer_class=RestaurantSerializer
-    queryset = Restaurant.objects.all()
+
+class RestaurantCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = RestaurantCategory.objects.all()
+    serializer_class = RestaurantCategorySerializer
     permission_classes = [AllowAny]
 
-class MenuItemDetailView(generics.RetrieveAPIView):
-    serializer_class=RestaurantSerializer
-    queryset = Restaurant.objects.all()
+
+class RestaurantOwnerListCreateView(generics.ListCreateAPIView):
+    queryset = RestaurantOwner.objects.all()
+    serializer_class = RestaurantOwnerSerializer
     permission_classes = [AllowAny]
-    lookup_field = 'id'
 
 
+class RestaurantOwnerDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = RestaurantOwner.objects.all()
+    serializer_class = RestaurantOwnerSerializer
+    permission_classes = [AllowAny]
 
 
+class DishCategoryListCreateView(generics.ListCreateAPIView):
+    queryset = DishCategory.objects.all()
+    serializer_class = DishCategorySerializer
+    permission_classes = [AllowAny]
 
 
+class DishCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DishCategory.objects.all()
+    serializer_class = DishCategorySerializer
+    permission_classes = [AllowAny]
+
+
+class DishListCreateView(generics.ListCreateAPIView):
+    serializer_class = DishSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        queryset = Dish.objects.all()
+        restaurant_id = self.request.query_params.get("restaurant")
+        category_id = self.request.query_params.get("category")
+
+        if restaurant_id:
+            queryset = queryset.filter(restaurant_id=restaurant_id)
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+
+        return queryset
+
+
+class DishDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Dish.objects.all()
+    serializer_class = DishSerializer
+    permission_classes = [AllowAny]

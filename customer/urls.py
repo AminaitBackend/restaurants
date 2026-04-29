@@ -1,9 +1,20 @@
-from .views import CartView,CartItemCreateView,CartItemUpdateView,CartItemDeleteView,CartClearview
 from django.urls import path
+
+from .views import (
+    CartDetailView,
+    CartItemDetailView,
+    CartItemListCreateView,
+    CartListCreateView,
+    CustomerDetailView,
+    CustomerListCreateView,
+)
+
+
 urlpatterns = [
-    path('cart/', CartView.as_view()),
-    path('cart/items/', CartItemCreateView.as_view()),
-    path('cart/items/<int:pk>/', CartItemUpdateView.as_view()),
-    path('cart/items/<int:id>/', CartItemDeleteView.as_view()),
-    path('cart/clear/', CartClearview.as_view()),
+    path("customers/", CustomerListCreateView.as_view(), name="customer-list"),
+    path("customers/<int:pk>/", CustomerDetailView.as_view(), name="customer-detail"),
+    path("carts/", CartListCreateView.as_view(), name="cart-list"),
+    path("carts/<int:pk>/", CartDetailView.as_view(), name="cart-detail"),
+    path("cart-items/", CartItemListCreateView.as_view(), name="cart-item-list"),
+    path("cart-items/<int:pk>/", CartItemDetailView.as_view(), name="cart-item-detail"),
 ]

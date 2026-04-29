@@ -1,7 +1,9 @@
 from rest_framework import serializers
+
 from .models import DeliveryAddress
 
-class DeliveryAddressSerializers(serializers.Serializer):
+
+class DeliveryAddressSerializer(serializers.ModelSerializer):
     class Meta:
-        model=DeliveryAddress
-        fields="__all__"
+        model = DeliveryAddress
+        fields = "__all__"

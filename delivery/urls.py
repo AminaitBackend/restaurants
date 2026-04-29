@@ -1,6 +1,17 @@
-from .views import AddressListAPIView,DeliveryAddressCreateAPIView
 from django.urls import path
+
+from .views import DeliveryAddressDetailView, DeliveryAddressListCreateView
+
+
 urlpatterns = [
-    path('addresses/', AddressListAPIView.as_view()),
-    path('adresses/',DeliveryAddressCreateAPIView.as_view()),
-    ]
+    path(
+        "delivery-addresses/",
+        DeliveryAddressListCreateView.as_view(),
+        name="delivery-address-list",
+    ),
+    path(
+        "delivery-addresses/<int:pk>/",
+        DeliveryAddressDetailView.as_view(),
+        name="delivery-address-detail",
+    ),
+]

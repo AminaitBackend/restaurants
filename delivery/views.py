@@ -1,15 +1,17 @@
-from django.shortcuts import render
 from rest_framework import generics
-from .models import DeliveryAddress
-from rest_framework.permissions import IsAdminUser,AllowAny,IsAuthenticated
-from .serializers import DeliveryAddressSerializers
-# Create your views here.
-class AddressListAPIView(generics.ListAPIView):
-    permission_classes = [AllowAny]
-    queryset = DeliveryAddress.objects.all()
-    serializer_class = DeliveryAddressSerializers
+from rest_framework.permissions import AllowAny
 
-class DeliveryAddressCreateAPIView(generics.CreateAPIView):
-    permission_classes = [AllowAny]
+from .models import DeliveryAddress
+from .serializers import DeliveryAddressSerializer
+
+
+class DeliveryAddressListCreateView(generics.ListCreateAPIView):
     queryset = DeliveryAddress.objects.all()
-    serializer_class = DeliveryAddressSerializers
+    serializer_class = DeliveryAddressSerializer
+    permission_classes = [AllowAny]
+
+
+class DeliveryAddressDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DeliveryAddress.objects.all()
+    serializer_class = DeliveryAddressSerializer
+    permission_classes = [AllowAny]

@@ -1,33 +1,41 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
 from rest_framework import generics
-from .models import Customer, Cart
-from rest_framework.permissions import IsAdminUser,AllowAny,IsAuthenticated
-from .serializers import CustomerSerializers, CartSerializer,CartItemSerializer
+from rest_framework.permissions import AllowAny
 
-# Create your views here.
-class CartView(generics.ListAPIView):
+from .models import Cart, CartItem, Customer
+from .serializers import CartItemSerializer, CartSerializer, CustomerSerializer
+
+
+class CustomerListCreateView(generics.ListCreateAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
     permission_classes = [AllowAny]
+
+
+class CustomerDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    permission_classes = [AllowAny]
+
+
+class CartListCreateView(generics.ListCreateAPIView):
+    queryset = Cart.objects.all()
     serializer_class = CartSerializer
-    queryset = Cart.objects.all()
-
-class CartItemCreateView(generics.CreateAPIView):
     permission_classes = [AllowAny]
-    serializer_class = CartItemSerializer
-    queryset = Cart.objects.all()
 
-class CartItemUpdateView(generics.UpdateAPIView):
+
+class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
     permission_classes = [AllowAny]
-    serializer_class = CartItemSerializer
-    queryset = Cart.objects.all()
 
-class CartItemDeleteView(generics.DestroyAPIView):
+
+class CartItemListCreateView(generics.ListCreateAPIView):
+    queryset = CartItem.objects.all()
+    serializer_class = CartItemSerializer
     permission_classes = [AllowAny]
+
+
+class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
-    queryset = Cart.objects.all()
-
-
-class CartClearview(generics.DestroyAPIView):
     permission_classes = [AllowAny]
-    serializer_class = CartItemSerializer
-    queryset = Cart.objects.all()

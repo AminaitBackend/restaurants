@@ -1,19 +1,35 @@
 from rest_framework import serializers
-from .models import Restaurant
-from .models import RestaurantCategory
-from .models import Dish
 
-class RestaurantSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Restaurant
-        fields="__all__"
+from .models import Dish, DishCategory, Restaurant, RestaurantCategory, RestaurantOwner
+
 
 class RestaurantCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model=RestaurantCategory
-        fields="__all__"
+        model = RestaurantCategory
+        fields = "__all__"
 
-class DishSerializers(serializers.ModelSerializer):
+
+class RestaurantOwnerSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Dish
-        fields="__all__"
+        model = RestaurantOwner
+        fields = "__all__"
+
+
+class DishCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DishCategory
+        fields = "__all__"
+
+
+class DishSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dish
+        fields = "__all__"
+
+
+class RestaurantSerializer(serializers.ModelSerializer):
+    dishes = DishSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Restaurant
+        fields = "__all__"
