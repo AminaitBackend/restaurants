@@ -3,17 +3,17 @@ from .models import Restaurant
 from .models import RestaurantCategory
 from .models import Dish
 
-class RestaurantSerializer(serializers.Serializer):
+class RestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model=Restaurant
         fields="__all__"
 
-class RestaurantCategorySerializer(serializers.Serializer):
+class RestaurantCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model=RestaurantCategory
         fields="__all__"
 
-class DishSerializers(serializers.Serializer):
+class DishSerializers(serializers.ModelSerializer):
     class Meta:
         model=Dish
         fields="__all__"

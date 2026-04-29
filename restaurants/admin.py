@@ -9,7 +9,7 @@ admin.site.register(RestaurantCategory)
 admin.site.register(RestaurantOwner)
 
 admin.site.register(Restaurant)
-admin.site.category(DishCategory)
+admin.site.register(DishCategory)
 
 admin.site.register(Dish)
 # Register your models here.
