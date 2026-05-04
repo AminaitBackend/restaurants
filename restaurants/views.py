@@ -12,19 +12,37 @@ from .serializers import (
 
 
 class RestaurantListCreateView(generics.ListCreateAPIView):
-    queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
     permission_classes = [AllowAny]
 
+    def get_queryset(self):
+        queryset = Restaurant.objects.select_related("category", "owner").prefetch_related(
+            "dishes__category"
+        )
+        category_id = self.request.query_params.get("category")
+        owner_id = self.request.query_params.get("owner")
+        is_active = self.request.query_params.get("is_active")
+
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+        if owner_id:
+            queryset = queryset.filter(owner_id=owner_id)
+        if is_active is not None:
+            queryset = queryset.filter(is_active=is_active.lower() == "true")
+
+        return queryset
+
 
 class RestaurantDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Restaurant.objects.all()
+    queryset = Restaurant.objects.select_related("category", "owner").prefetch_related(
+        "dishes__category"
+    )
     serializer_class = RestaurantSerializer
     permission_classes = [AllowAny]
 
 
 class RestaurantCategoryListCreateView(generics.ListCreateAPIView):
-    queryset = RestaurantCategory.objects.all()
+    queryset = RestaurantCategory.objects.all().order_by("name")
     serializer_class = RestaurantCategorySerializer
     permission_classes = [AllowAny]
 
@@ -36,7 +54,7 @@ class RestaurantCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class RestaurantOwnerListCreateView(generics.ListCreateAPIView):
-    queryset = RestaurantOwner.objects.all()
+    queryset = RestaurantOwner.objects.all().order_by("full_name")
     serializer_class = RestaurantOwnerSerializer
     permission_classes = [AllowAny]
 
@@ -48,7 +66,7 @@ class RestaurantOwnerDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class DishCategoryListCreateView(generics.ListCreateAPIView):
-    queryset = DishCategory.objects.all()
+    queryset = DishCategory.objects.all().order_by("name")
     serializer_class = DishCategorySerializer
     permission_classes = [AllowAny]
 
@@ -64,19 +82,22 @@ class DishListCreateView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = Dish.objects.all()
+        queryset = Dish.objects.select_related("restaurant", "category")
         restaurant_id = self.request.query_params.get("restaurant")
         category_id = self.request.query_params.get("category")
+        status_value = self.request.query_params.get("status")
 
         if restaurant_id:
             queryset = queryset.filter(restaurant_id=restaurant_id)
         if category_id:
             queryset = queryset.filter(category_id=category_id)
+        if status_value:
+            queryset = queryset.filter(status=status_value)
 
         return queryset
 
 
 class DishDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Dish.objects.all()
+    queryset = Dish.objects.select_related("restaurant", "category")
     serializer_class = DishSerializer
     permission_classes = [AllowAny]
