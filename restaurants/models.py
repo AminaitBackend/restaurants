@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, validate_email
 
 class RestaurantCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -7,7 +8,9 @@ class RestaurantCategory(models.Model):
     class Meta:
         ordering = ["name"]
         verbose_name_plural = "restaurant categories"
-
+    def clean(self):
+        if not self.name.strip():
+            raise ValidationError("чтобы не было пустым")
     def __str__(self):
         return self.name
 
@@ -16,10 +19,16 @@ class RestaurantOwner(models.Model):
     full_name = models.CharField(max_length=100)
     phone = models.CharField(max_length=20, unique=True)
     email = models.EmailField(blank=True)
-
+            validators =[validate_email(value)]
     class Meta:
         ordering = ["full_name"]
-
+    def clean(self):
+        if not self.full_name:
+            raise ValidationError("чтобы не было пустым")
+        if not self.full_name.isdight():
+            raise ValidationError("чтобы не состояла из цифр")
+        if not self.phone.isdigit():
+            raise ValidationError("валидный формат телефона")
     def __str__(self):
         return self.full_name
 
@@ -58,6 +67,19 @@ class Restaurant(models.Model):
 
     class Meta:
         ordering = ["name"]
+    def clean(self):
+        if not self.address.strip():
+            raise ValidationError("чтобы не было пустым")
+        if not self.opening_time.strip():
+            raise ValidationError("чтобы не было пустым")
+        if not self.closing_time.strip():
+            raise ValidationError("чтобы не было пустым")
+        if not self.latitude.strip():
+            raise ValidationError("должен быть от -90 до 90")
+        if not self.longitude.strip():
+            raise ValidationError("должно быть от -180 до 180")
+        if not self.comment.strip():
+            raise ValidationError("category обезательна")
 
     def __str__(self):
         return self.name
@@ -70,6 +92,9 @@ class DishCategory(models.Model):
         ordering = ["name"]
         verbose_name_plural = "dish categories"
 
+    def clean(self):
+        if not self.name.strip():
+            raise ValidationError('чтобы имя не было пустым')
     def __str__(self):
         return self.name
 
@@ -95,6 +120,9 @@ class Dish(models.Model):
     )
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+          validators = [MinValueValidator(0)]
+
+
     image = models.ImageField(upload_to="dishes/", blank=True)
     description = models.TextField(blank=True)
     status = models.CharField(
@@ -105,6 +133,19 @@ class Dish(models.Model):
 
     class Meta:
         ordering = ["restaurant", "name"]
+    def clean(self):
+        if not self.name.strip():
+            raise ValidationError("чтобы не было пустым")
+        if not self.status.strip():
+            raise ValidationError("только из допустимых choices")
+        if not self.dish.price.strip():
+            raise ValidationError("не должно быть отрицательным")
+        if not self.comment.strip():
+            raise ValidationError("category обезательна")
 
-    def __str__(self):
+        if not self.comment.strip():
+            raise ValidationError(" restaurant обезательна")
+
+
+def __str__(self):
         return self.name

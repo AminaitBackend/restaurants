@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.exceptions import ValidationError
 
 class Payment(models.Model):
     METHOD_CASH = "cash"
@@ -41,3 +41,14 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment for order #{self.order_id}"
+    def clean(self):
+        if not self.amount():
+            raise ValidationError("не может быть отрицательным")
+        if not self.amount():
+            raise ValidationError("должен быть больше нуля")
+        if not self.status():
+            raise ValidationError("должен быть только из допустимых choices")
+        if not self.method():
+            raise ValidationError("должен быть только из допустимых choices")
+        if not self.comment.strip():
+            raise ValidationError("order обезательна")

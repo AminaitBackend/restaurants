@@ -1,6 +1,6 @@
 from django.db import models
-
-
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator
 class Order(models.Model):
     STATUS_CREATED = "created"
     STATUS_PAID = "paid"
@@ -45,6 +45,19 @@ class Order(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        def clean(self):
+            if not self.delivery_price.strip():
+                raise ValidationError("не должен быть отрицательной")
+            if not self.total_price.strip():
+                raise ValidationError("не должен быть меньше delivery_price")
+            if not self.comment.strip():
+                raise ValidationError("customer обязательна")
+            if not self.comment.strip():
+                raise ValidationError("restaurant обязательна")
+            if not self.comment.strip():
+                raise ValidationError("delivery_address обязательна")
+            if not self.status.strip():
+                raise ValidationError("должен быть только из допустимых choices")
 
     def __str__(self):
         return f"Order #{self.pk} by {self.customer}"
@@ -64,5 +77,13 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
+
     def __str__(self):
         return f"{self.dish} x {self.quantity}"
+    def clean(self):
+         if not self.price.strip():
+             raise ValidationError("не должен быть отрицательным")
+         if not self.quantity():
+             raise ValidationError("не должна быть слишком большой ")
+         if not self.quantity():
+             raise ValidationError("должна быть больше 0 ")
