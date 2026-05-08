@@ -1,5 +1,7 @@
-from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
+from django.db import models
+
 
 class Payment(models.Model):
     METHOD_CASH = "cash"
@@ -35,20 +37,37 @@ class Payment(models.Model):
         choices=STATUS_CHOICES,
         default=STATUS_PENDING,
     )
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0.01)],
+    )
     receipt_number = models.CharField(max_length=100, blank=True)
     paid_at = models.DateTimeField(null=True, blank=True)
 
+    def clean(self):
+        self.receipt_number = self.receipt_number.strip()
+
+        if self.order_id is None:
+            raise ValidationError({"order": "Заказ обязателен."})
+        if self.amount is None:
+            raise ValidationError({"amount": "Сумма обязательна."})
+        if self.amount != self.order.total_price:
+            raise ValidationError({"amount": "Сумма оплаты должна совпадать с суммой заказа."})
+        if self.status == self.STATUS_PAID and self.paid_at is None:
+            raise ValidationError({"paid_at": "Для оплаченного платежа нужно указать дату оплаты."})
+        if self.status != self.STATUS_PAID and self.paid_at is not None:
+            raise ValidationError(
+                {"paid_at": "Дата оплаты может быть указана только у оплаченного платежа."}
+            )
+        if self.receipt_number and len(self.receipt_number) < 4:
+            raise ValidationError(
+                {"receipt_number": "Номер чека должен содержать минимум 4 символа."}
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Payment for order #{self.order_id}"
-    def clean(self):
-        if not self.amount():
-            raise ValidationError("не может быть отрицательным")
-        if not self.amount():
-            raise ValidationError("должен быть больше нуля")
-        if not self.status():
-            raise ValidationError("должен быть только из допустимых choices")
-        if not self.method():
-            raise ValidationError("должен быть только из допустимых choices")
-        if not self.comment.strip():
-            raise ValidationError("order обезательна")

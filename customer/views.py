@@ -6,9 +6,17 @@ from .serializers import CartItemSerializer, CartSerializer, CustomerSerializer
 
 
 class CustomerListCreateView(generics.ListCreateAPIView):
-    queryset = Customer.objects.all().order_by("full_name")
     serializer_class = CustomerSerializer
     permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        queryset = Customer.objects.all().order_by("full_name")
+        search = self.request.query_params.get("search")
+
+        if search:
+            queryset = queryset.filter(full_name__icontains=search.strip())
+
+        return queryset
 
 
 class CustomerDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -22,8 +30,10 @@ class CartListCreateView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = Cart.objects.select_related("customer", "restaurant").prefetch_related(
-            "items__dish"
+        queryset = (
+            Cart.objects.select_related("customer", "restaurant")
+            .prefetch_related("items__dish")
+            .order_by("-updated_at")
         )
         customer_id = self.request.query_params.get("customer")
         restaurant_id = self.request.query_params.get("restaurant")
@@ -49,11 +59,16 @@ class CartItemListCreateView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = CartItem.objects.select_related("cart", "dish", "cart__customer")
+        queryset = CartItem.objects.select_related("cart", "dish", "cart__customer").order_by(
+            "id"
+        )
         cart_id = self.request.query_params.get("cart")
+        dish_id = self.request.query_params.get("dish")
 
         if cart_id:
             queryset = queryset.filter(cart_id=cart_id)
+        if dish_id:
+            queryset = queryset.filter(dish_id=dish_id)
 
         return queryset
 

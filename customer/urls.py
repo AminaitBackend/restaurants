@@ -9,6 +9,8 @@ from .views import (
     CustomerListCreateView,
 )
 
+app_name = "customer"
+
 
 urlpatterns = [
     path("customers/", CustomerListCreateView.as_view(), name="customer-list"),

@@ -13,6 +13,8 @@ from .views import (
     RestaurantOwnerListCreateView,
 )
 
+app_name = "restaurants"
+
 
 urlpatterns = [
     path("restaurants/", RestaurantListCreateView.as_view(), name="restaurant-list"),

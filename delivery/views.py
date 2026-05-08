@@ -10,11 +10,16 @@ class DeliveryAddressListCreateView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = DeliveryAddress.objects.select_related("customer")
+        queryset = DeliveryAddress.objects.select_related("customer").order_by(
+            "city", "street", "house"
+        )
         customer_id = self.request.query_params.get("customer")
+        city = self.request.query_params.get("city")
 
         if customer_id:
             queryset = queryset.filter(customer_id=customer_id)
+        if city:
+            queryset = queryset.filter(city__icontains=city.strip())
 
         return queryset
 

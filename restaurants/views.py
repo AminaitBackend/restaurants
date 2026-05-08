@@ -11,24 +11,41 @@ from .serializers import (
 )
 
 
+def _parse_bool_param(value):
+    if value is None:
+        return None
+
+    normalized = value.strip().lower()
+    if normalized in {"true", "1", "yes"}:
+        return True
+    if normalized in {"false", "0", "no"}:
+        return False
+    return None
+
+
 class RestaurantListCreateView(generics.ListCreateAPIView):
     serializer_class = RestaurantSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = Restaurant.objects.select_related("category", "owner").prefetch_related(
-            "dishes__category"
+        queryset = (
+            Restaurant.objects.select_related("category", "owner")
+            .prefetch_related("dishes__category")
+            .order_by("name")
         )
         category_id = self.request.query_params.get("category")
         owner_id = self.request.query_params.get("owner")
-        is_active = self.request.query_params.get("is_active")
+        is_active = _parse_bool_param(self.request.query_params.get("is_active"))
+        search = self.request.query_params.get("search")
 
         if category_id:
             queryset = queryset.filter(category_id=category_id)
         if owner_id:
             queryset = queryset.filter(owner_id=owner_id)
         if is_active is not None:
-            queryset = queryset.filter(is_active=is_active.lower() == "true")
+            queryset = queryset.filter(is_active=is_active)
+        if search:
+            queryset = queryset.filter(name__icontains=search.strip())
 
         return queryset
 
@@ -82,10 +99,11 @@ class DishListCreateView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = Dish.objects.select_related("restaurant", "category")
+        queryset = Dish.objects.select_related("restaurant", "category").order_by("name")
         restaurant_id = self.request.query_params.get("restaurant")
         category_id = self.request.query_params.get("category")
         status_value = self.request.query_params.get("status")
+        search = self.request.query_params.get("search")
 
         if restaurant_id:
             queryset = queryset.filter(restaurant_id=restaurant_id)
@@ -93,6 +111,8 @@ class DishListCreateView(generics.ListCreateAPIView):
             queryset = queryset.filter(category_id=category_id)
         if status_value:
             queryset = queryset.filter(status=status_value)
+        if search:
+            queryset = queryset.filter(name__icontains=search.strip())
 
         return queryset
 

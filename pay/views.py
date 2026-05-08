@@ -10,13 +10,16 @@ class PaymentListCreateView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = Payment.objects.select_related("order", "order__customer")
+        queryset = Payment.objects.select_related("order", "order__customer").order_by("-id")
         order_id = self.request.query_params.get("order")
+        customer_id = self.request.query_params.get("customer")
         method = self.request.query_params.get("method")
         status_value = self.request.query_params.get("status")
 
         if order_id:
             queryset = queryset.filter(order_id=order_id)
+        if customer_id:
+            queryset = queryset.filter(order__customer_id=customer_id)
         if method:
             queryset = queryset.filter(method=method)
         if status_value:

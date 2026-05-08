@@ -10,11 +10,15 @@ class OrderListCreateView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = Order.objects.select_related(
-            "customer",
-            "restaurant",
-            "delivery_address",
-        ).prefetch_related("items__dish")
+        queryset = (
+            Order.objects.select_related(
+                "customer",
+                "restaurant",
+                "delivery_address",
+            )
+            .prefetch_related("items__dish")
+            .order_by("-created_at")
+        )
         customer_id = self.request.query_params.get("customer")
         restaurant_id = self.request.query_params.get("restaurant")
         status_value = self.request.query_params.get("status")
@@ -44,11 +48,14 @@ class OrderItemListCreateView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = OrderItem.objects.select_related("order", "dish")
+        queryset = OrderItem.objects.select_related("order", "dish").order_by("id")
         order_id = self.request.query_params.get("order")
+        dish_id = self.request.query_params.get("dish")
 
         if order_id:
             queryset = queryset.filter(order_id=order_id)
+        if dish_id:
+            queryset = queryset.filter(dish_id=dish_id)
 
         return queryset
 

@@ -2,6 +2,8 @@ from django.urls import path
 
 from .views import DeliveryAddressDetailView, DeliveryAddressListCreateView
 
+app_name = "delivery"
+
 
 urlpatterns = [
     path(
