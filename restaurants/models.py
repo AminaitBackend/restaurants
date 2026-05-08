@@ -12,6 +12,7 @@ phone_validator = RegexValidator(
 
 
 class RestaurantCategory(models.Model):
+    """модель категори ресторана"""
     name = models.CharField(max_length=100, unique=True)
 
     class Meta:
@@ -35,6 +36,7 @@ class RestaurantCategory(models.Model):
 
 
 class RestaurantOwner(models.Model):
+    """модель владельцов ресторанов"""
     full_name = models.CharField(max_length=100)
     phone = models.CharField(max_length=20, unique=True, validators=[phone_validator])
     email = models.EmailField(blank=True)
@@ -61,6 +63,7 @@ class RestaurantOwner(models.Model):
 
 
 class Restaurant(models.Model):
+    """модель ресторанов"""
     category = models.ForeignKey(
         RestaurantCategory,
         on_delete=models.PROTECT,
@@ -125,6 +128,7 @@ class Restaurant(models.Model):
 
 
 class DishCategory(models.Model):
+    """модель категори еды """
     name = models.CharField(max_length=100, unique=True)
 
     class Meta:
@@ -148,6 +152,7 @@ class DishCategory(models.Model):
 
 
 class Dish(models.Model):
+    """модель еды"""
     STATUS_AVAILABLE = "available"
     STATUS_UNAVAILABLE = "unavailable"
 

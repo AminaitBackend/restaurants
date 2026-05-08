@@ -4,6 +4,7 @@ from .models import Order, OrderItem
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    """Serializer заказов"""
     dish_name = serializers.CharField(source="dish.name", read_only=True)
 
     def validate_quantity(self, value):
@@ -36,6 +37,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    """Serializer заказов"""
     items = OrderItemSerializer(many=True, read_only=True)
     customer_name = serializers.CharField(source="customer.full_name", read_only=True)
     restaurant_name = serializers.CharField(source="restaurant.name", read_only=True)

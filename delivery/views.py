@@ -6,6 +6,7 @@ from .serializers import DeliveryAddressSerializer
 
 
 class DeliveryAddressListCreateView(generics.ListCreateAPIView):
+    """список адресов или создать адрес"""
     serializer_class = DeliveryAddressSerializer
     permission_classes = [AllowAny]
 
@@ -25,6 +26,7 @@ class DeliveryAddressListCreateView(generics.ListCreateAPIView):
 
 
 class DeliveryAddressDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """показывает детально о адресе"""
     queryset = DeliveryAddress.objects.select_related("customer")
     serializer_class = DeliveryAddressSerializer
     permission_classes = [AllowAny]

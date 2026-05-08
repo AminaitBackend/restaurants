@@ -4,6 +4,7 @@ from .models import DeliveryAddress
 
 
 class DeliveryAddressSerializer(serializers.ModelSerializer):
+    """Serializer адресов"""
     customer_name = serializers.CharField(source="customer.full_name", read_only=True)
 
     def validate_city(self, value):

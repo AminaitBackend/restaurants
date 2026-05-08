@@ -6,6 +6,7 @@ from .serializers import CartItemSerializer, CartSerializer, CustomerSerializer
 
 
 class CustomerListCreateView(generics.ListCreateAPIView):
+    """показывает список клиентов или создоет клиента"""
     serializer_class = CustomerSerializer
     permission_classes = [AllowAny]
 
@@ -20,12 +21,14 @@ class CustomerListCreateView(generics.ListCreateAPIView):
 
 
 class CustomerDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """показывает подробно о клиенте"""
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     permission_classes = [AllowAny]
 
 
 class CartListCreateView(generics.ListCreateAPIView):
+    """показывает список корзин или создоет корзину"""
     serializer_class = CartSerializer
     permission_classes = [AllowAny]
 
@@ -47,6 +50,7 @@ class CartListCreateView(generics.ListCreateAPIView):
 
 
 class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """оказывает подробно о корзине"""
     queryset = Cart.objects.select_related("customer", "restaurant").prefetch_related(
         "items__dish"
     )
@@ -55,6 +59,7 @@ class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class CartItemListCreateView(generics.ListCreateAPIView):
+    """показывает список корзин или создоет корзину"""
     serializer_class = CartItemSerializer
     permission_classes = [AllowAny]
 
@@ -74,6 +79,7 @@ class CartItemListCreateView(generics.ListCreateAPIView):
 
 
 class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """показывает детально о корзине"""
     queryset = CartItem.objects.select_related("cart", "dish", "cart__customer")
     serializer_class = CartItemSerializer
     permission_classes = [AllowAny]

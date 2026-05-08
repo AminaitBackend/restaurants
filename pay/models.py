@@ -4,6 +4,7 @@ from django.db import models
 
 
 class Payment(models.Model):
+    """модель оплаты"""
     METHOD_CASH = "cash"
     METHOD_CARD = "card"
     METHOD_ONLINE = "online"

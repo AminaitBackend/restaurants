@@ -4,6 +4,7 @@ from django.db import models
 
 
 class DeliveryAddress(models.Model):
+    """модель адресов"""
     customer = models.ForeignKey(
         "customer.Customer",
         on_delete=models.CASCADE,

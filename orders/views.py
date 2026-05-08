@@ -6,6 +6,7 @@ from .serializers import OrderItemSerializer, OrderSerializer
 
 
 class OrderListCreateView(generics.ListCreateAPIView):
+    """показывает список заказов или создоет заказ"""
     serializer_class = OrderSerializer
     permission_classes = [AllowAny]
 
@@ -34,6 +35,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
 
 
 class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """показывает детально о заказе"""
     queryset = Order.objects.select_related(
         "customer",
         "restaurant",
@@ -44,6 +46,7 @@ class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class OrderItemListCreateView(generics.ListCreateAPIView):
+    """показывает лист заказов или создоет"""
     serializer_class = OrderItemSerializer
     permission_classes = [AllowAny]
 
@@ -61,6 +64,7 @@ class OrderItemListCreateView(generics.ListCreateAPIView):
 
 
 class OrderItemDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """показывает детально о заказе"""
     queryset = OrderItem.objects.select_related("order", "dish")
     serializer_class = OrderItemSerializer
     permission_classes = [AllowAny]

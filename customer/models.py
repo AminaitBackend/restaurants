@@ -12,6 +12,7 @@ phone_validator = RegexValidator(
 
 
 class Customer(models.Model):
+    """модель пользователей"""
     full_name = models.CharField(max_length=100)
     phone = models.CharField(max_length=20, unique=True, validators=[phone_validator])
     email = models.EmailField(blank=True)
@@ -45,6 +46,7 @@ class Customer(models.Model):
 
 
 class Cart(models.Model):
+    """модель корзины"""
     customer = models.OneToOneField(
         Customer,
         on_delete=models.CASCADE,
@@ -73,6 +75,7 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
+    """модель корзины"""
     cart = models.ForeignKey(
         Cart,
         on_delete=models.CASCADE,

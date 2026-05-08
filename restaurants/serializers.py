@@ -4,6 +4,7 @@ from .models import Dish, DishCategory, Restaurant, RestaurantCategory, Restaura
 
 
 class RestaurantCategorySerializer(serializers.ModelSerializer):
+    """Serializer категори ресторанов"""
     def validate_name(self, value):
         value = value.strip()
         if not value:
@@ -17,6 +18,7 @@ class RestaurantCategorySerializer(serializers.ModelSerializer):
 
 
 class RestaurantOwnerSerializer(serializers.ModelSerializer):
+    """Serializer владельцов ресторанов"""
     def validate_full_name(self, value):
         value = value.strip()
         if not value:
@@ -36,6 +38,7 @@ class RestaurantOwnerSerializer(serializers.ModelSerializer):
 
 
 class DishCategorySerializer(serializers.ModelSerializer):
+    """Serializer категори еды"""
     def validate_name(self, value):
         value = value.strip()
         if not value:
@@ -49,6 +52,7 @@ class DishCategorySerializer(serializers.ModelSerializer):
 
 
 class DishSerializer(serializers.ModelSerializer):
+    """Serializer еды"""
     restaurant_name = serializers.CharField(source="restaurant.name", read_only=True)
     category_name = serializers.CharField(source="category.name", read_only=True)
 
@@ -91,6 +95,7 @@ class DishSerializer(serializers.ModelSerializer):
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
+    """Serializer ресторанов"""
     dishes = DishSerializer(many=True, read_only=True)
     category_name = serializers.CharField(source="category.name", read_only=True)
     owner_name = serializers.CharField(source="owner.full_name", read_only=True)

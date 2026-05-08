@@ -4,6 +4,7 @@ from .models import Payment
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+    """Serializer оплаты"""
     customer_name = serializers.CharField(source="order.customer.full_name", read_only=True)
 
     def validate_amount(self, value):

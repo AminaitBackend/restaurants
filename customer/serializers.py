@@ -4,6 +4,7 @@ from .models import Cart, CartItem, Customer
 
 
 class CustomerSerializer(serializers.ModelSerializer):
+    """Serializer клиента"""
     def validate_full_name(self, value):
         value = value.strip()
         if not value:
@@ -25,6 +26,7 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 
 class CartItemSerializer(serializers.ModelSerializer):
+    """Serializer корзины"""
     dish_name = serializers.CharField(source="dish.name", read_only=True)
 
     def validate_quantity(self, value):
@@ -52,6 +54,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
+    """Serializer корзины"""
     items = CartItemSerializer(many=True, read_only=True)
     customer_name = serializers.CharField(source="customer.full_name", read_only=True)
     restaurant_name = serializers.CharField(source="restaurant.name", read_only=True)

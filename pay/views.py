@@ -6,6 +6,7 @@ from .serializers import PaymentSerializer
 
 
 class PaymentListCreateView(generics.ListCreateAPIView):
+    """список оплаты """
     serializer_class = PaymentSerializer
     permission_classes = [AllowAny]
 

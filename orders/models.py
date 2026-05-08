@@ -4,6 +4,7 @@ from django.db import models
 
 
 class Order(models.Model):
+    """модель заказов"""
     STATUS_CREATED = "created"
     STATUS_PAID = "paid"
     STATUS_COOKING = "cooking"
@@ -91,6 +92,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    """модель заказов """
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,

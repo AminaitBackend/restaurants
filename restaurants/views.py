@@ -24,6 +24,7 @@ def _parse_bool_param(value):
 
 
 class RestaurantListCreateView(generics.ListCreateAPIView):
+    """список ресторанов или создать ресторан """
     serializer_class = RestaurantSerializer
     permission_classes = [AllowAny]
 
@@ -51,6 +52,7 @@ class RestaurantListCreateView(generics.ListCreateAPIView):
 
 
 class RestaurantDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """подробно о ресторане"""
     queryset = Restaurant.objects.select_related("category", "owner").prefetch_related(
         "dishes__category"
     )
@@ -59,42 +61,49 @@ class RestaurantDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class RestaurantCategoryListCreateView(generics.ListCreateAPIView):
+    """список категори ресторанов или создать категорию"""
     queryset = RestaurantCategory.objects.all().order_by("name")
     serializer_class = RestaurantCategorySerializer
     permission_classes = [AllowAny]
 
 
 class RestaurantCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """подробно о категори ресторана """
     queryset = RestaurantCategory.objects.all()
     serializer_class = RestaurantCategorySerializer
     permission_classes = [AllowAny]
 
 
 class RestaurantOwnerListCreateView(generics.ListCreateAPIView):
+    """писок владельцов ресторана или создать владельца"""
     queryset = RestaurantOwner.objects.all().order_by("full_name")
     serializer_class = RestaurantOwnerSerializer
     permission_classes = [AllowAny]
 
 
 class RestaurantOwnerDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """подробно о владельца ресторана"""
     queryset = RestaurantOwner.objects.all()
     serializer_class = RestaurantOwnerSerializer
     permission_classes = [AllowAny]
 
 
 class DishCategoryListCreateView(generics.ListCreateAPIView):
+    """список категори еды тли создать категорию"""
     queryset = DishCategory.objects.all().order_by("name")
     serializer_class = DishCategorySerializer
     permission_classes = [AllowAny]
 
 
 class DishCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """подробно о категори еды"""
     queryset = DishCategory.objects.all()
     serializer_class = DishCategorySerializer
     permission_classes = [AllowAny]
 
 
 class DishListCreateView(generics.ListCreateAPIView):
+    """список еды или создать еду"""
     serializer_class = DishSerializer
     permission_classes = [AllowAny]
 
@@ -118,6 +127,7 @@ class DishListCreateView(generics.ListCreateAPIView):
 
 
 class DishDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """подробно о еде"""
     queryset = Dish.objects.select_related("restaurant", "category")
     serializer_class = DishSerializer
     permission_classes = [AllowAny]
