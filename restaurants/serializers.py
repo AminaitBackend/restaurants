@@ -1,9 +1,11 @@
 from rest_framework import serializers
 
+from restaurant.serializer_mixins import DjangoValidationErrorMixin
+
 from .models import Dish, DishCategory, Restaurant, RestaurantCategory, RestaurantOwner
 
 
-class RestaurantCategorySerializer(serializers.ModelSerializer):
+class RestaurantCategorySerializer(DjangoValidationErrorMixin, serializers.ModelSerializer):
     """Serializer категори ресторанов"""
     def validate_name(self, value):
         value = value.strip()
@@ -17,7 +19,7 @@ class RestaurantCategorySerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
-class RestaurantOwnerSerializer(serializers.ModelSerializer):
+class RestaurantOwnerSerializer(DjangoValidationErrorMixin, serializers.ModelSerializer):
     """Serializer владельцов ресторанов"""
     def validate_full_name(self, value):
         value = value.strip()
@@ -37,7 +39,7 @@ class RestaurantOwnerSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
-class DishCategorySerializer(serializers.ModelSerializer):
+class DishCategorySerializer(DjangoValidationErrorMixin, serializers.ModelSerializer):
     """Serializer категори еды"""
     def validate_name(self, value):
         value = value.strip()
@@ -51,7 +53,7 @@ class DishCategorySerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
-class DishSerializer(serializers.ModelSerializer):
+class DishSerializer(DjangoValidationErrorMixin, serializers.ModelSerializer):
     """Serializer еды"""
     restaurant_name = serializers.CharField(source="restaurant.name", read_only=True)
     category_name = serializers.CharField(source="category.name", read_only=True)
@@ -94,7 +96,7 @@ class DishSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "restaurant_name", "category_name"]
 
 
-class RestaurantSerializer(serializers.ModelSerializer):
+class RestaurantSerializer(DjangoValidationErrorMixin, serializers.ModelSerializer):
     """Serializer ресторанов"""
     dishes = DishSerializer(many=True, read_only=True)
     category_name = serializers.CharField(source="category.name", read_only=True)

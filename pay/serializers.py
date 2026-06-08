@@ -1,9 +1,11 @@
 from rest_framework import serializers
 
+from restaurant.serializer_mixins import DjangoValidationErrorMixin
+
 from .models import Payment
 
 
-class PaymentSerializer(serializers.ModelSerializer):
+class PaymentSerializer(DjangoValidationErrorMixin, serializers.ModelSerializer):
     """Serializer оплаты"""
     customer_name = serializers.CharField(source="order.customer.full_name", read_only=True)
 

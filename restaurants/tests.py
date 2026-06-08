@@ -1,8 +1,9 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
+from rest_framework import serializers
 
 from .models import Dish, DishCategory, Restaurant, RestaurantCategory, RestaurantOwner
-from .serializers import DishSerializer, RestaurantSerializer
+from .serializers import DishSerializer, RestaurantCategorySerializer, RestaurantSerializer
 
 
 class RestaurantValidationTests(TestCase):
@@ -72,3 +73,11 @@ class RestaurantValidationTests(TestCase):
 
         with self.assertRaises(ValidationError):
             dish.full_clean()
+
+    def test_serializer_save_returns_validation_error_from_model_clean(self):
+        RestaurantCategory.objects.create(name="Bakery")
+        serializer = RestaurantCategorySerializer(data={"name": "bakery"})
+
+        self.assertTrue(serializer.is_valid())
+        with self.assertRaises(serializers.ValidationError):
+            serializer.save()

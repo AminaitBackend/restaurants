@@ -1,9 +1,11 @@
 from rest_framework import serializers
 
+from restaurant.serializer_mixins import DjangoValidationErrorMixin
+
 from .models import Order, OrderItem
 
 
-class OrderItemSerializer(serializers.ModelSerializer):
+class OrderItemSerializer(DjangoValidationErrorMixin, serializers.ModelSerializer):
     """Serializer заказов"""
     dish_name = serializers.CharField(source="dish.name", read_only=True)
 
@@ -36,7 +38,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "dish_name"]
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class OrderSerializer(DjangoValidationErrorMixin, serializers.ModelSerializer):
     """Serializer заказов"""
     items = OrderItemSerializer(many=True, read_only=True)
     customer_name = serializers.CharField(source="customer.full_name", read_only=True)

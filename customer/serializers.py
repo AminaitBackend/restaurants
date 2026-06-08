@@ -1,9 +1,11 @@
 from rest_framework import serializers
 
+from restaurant.serializer_mixins import DjangoValidationErrorMixin
+
 from .models import Cart, CartItem, Customer
 
 
-class CustomerSerializer(serializers.ModelSerializer):
+class CustomerSerializer(DjangoValidationErrorMixin, serializers.ModelSerializer):
     """Serializer клиента"""
     def validate_full_name(self, value):
         value = value.strip()
@@ -25,7 +27,7 @@ class CustomerSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created_at"]
 
 
-class CartItemSerializer(serializers.ModelSerializer):
+class CartItemSerializer(DjangoValidationErrorMixin, serializers.ModelSerializer):
     """Serializer корзины"""
     dish_name = serializers.CharField(source="dish.name", read_only=True)
 
@@ -53,7 +55,7 @@ class CartItemSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "dish_name"]
 
 
-class CartSerializer(serializers.ModelSerializer):
+class CartSerializer(DjangoValidationErrorMixin, serializers.ModelSerializer):
     """Serializer корзины"""
     items = CartItemSerializer(many=True, read_only=True)
     customer_name = serializers.CharField(source="customer.full_name", read_only=True)

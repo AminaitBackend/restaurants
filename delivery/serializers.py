@@ -1,9 +1,11 @@
 from rest_framework import serializers
 
+from restaurant.serializer_mixins import DjangoValidationErrorMixin
+
 from .models import DeliveryAddress
 
 
-class DeliveryAddressSerializer(serializers.ModelSerializer):
+class DeliveryAddressSerializer(DjangoValidationErrorMixin, serializers.ModelSerializer):
     """Serializer адресов"""
     customer_name = serializers.CharField(source="customer.full_name", read_only=True)
 
